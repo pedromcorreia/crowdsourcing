@@ -21,10 +21,16 @@ defmodule Crowdsourcing.Accounts do
 
   ## Examples
 
-  iex> list_users_by_characteristics(total,
-        %{citizenship: "japanese", gender: "male", age_concept: "children"}
+
+  iex> list_users_by_characteristics(total, %{
+    citizenship: [japanese: 50],
+          gender: %{male: 50, female: 50},
+          age_concept: %{
+            children: 50,
+            adult: 50
+          }
       )
-  )
+   )
   [
     %{
       age_concept: {:children, 40},
@@ -34,8 +40,13 @@ defmodule Crowdsourcing.Accounts do
     }
   ]
 
-  iex> list_users_by_characteristics(total,
-        %{citizenship: "brazilian", gender: "male", age_concept: "adult"}
+  iex> list_users_by_characteristics(total, %{
+    citizenship: [not_existent: 50],
+          gender: %{male: 50, female: 50},
+          age_concept: %{
+            children: 50,
+            adult: 50
+          }
       )
   )
   [

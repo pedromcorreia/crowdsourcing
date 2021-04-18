@@ -5,7 +5,7 @@ config :crowdsourcing, Crowdsourcing.Repo,
   username: "postgres",
   password: "postgres",
   database: "crowdsourcing_dev",
-  hostname: "localhost",
+  hostname: "db",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

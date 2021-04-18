@@ -2,7 +2,6 @@ defmodule CrowdsourcingWeb.UserController do
   use CrowdsourcingWeb, :controller
 
   alias Crowdsourcing.Accounts
-  alias Crowdsourcing.Accounts.User
 
   action_fallback CrowdsourcingWeb.FallbackController
 

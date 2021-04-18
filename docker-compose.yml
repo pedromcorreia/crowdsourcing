@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:11-alpine
+    restart: always
+    ports:
+      - 5432:5432
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+      - .:/app
+    environment:
+      POSTGRES_PASSWORD: postgres
+  crowdsourcing:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    volumes:
+      - .:/app
+      - elixir-artifacts:/opt/elixir_artifacts
+    depends_on:
+      - db
+    environment:
+      MIX_DEPS_PATH: "/opt/elixir_artifacts/deps"
+      MIX_BUILD_PATH: "/opt/elixir_artifacts/_build"
+volumes:
+  elixir-artifacts: {}
