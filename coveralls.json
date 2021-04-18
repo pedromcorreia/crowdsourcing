@@ -1,0 +1,20 @@
+{
+  "skip_files": [
+    "lib/crowdsourcing_web/endpoint.ex",
+    "lib/crowdsourcing_web.ex",
+    "lib/crowdsourcing/application.ex",
+    "lib/crowdsourcing/repo.ex",
+    "lib/crowdsourcing_web.ex",
+    "lib/crowdsourcing_web/channels/user_socket.ex",
+    "lib/crowdsourcing_web/endpoint.ex",
+    "lib/crowdsourcing_web/gettext.ex",
+    "lib/crowdsourcing_web/router.ex",
+    "lib/crowdsourcing_web/views/changeset_view.ex",
+    "lib/crowdsourcing_web/views/error_view.ex",
+    "lib/crowdsourcing_web/views/error_helper.ex",
+    "lib/crowdsourcing_web/views/error_helpers.ex",
+    "test/support/channel_case.ex",
+    "test/support/conn_case.ex",
+    "test/support/data_case.ex"
+  ]
+}

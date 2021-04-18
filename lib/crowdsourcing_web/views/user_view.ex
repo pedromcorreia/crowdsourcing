@@ -6,17 +6,15 @@ defmodule CrowdsourcingWeb.UserView do
     %{data: render_many(users, UserView, "user.json")}
   end
 
-  def render("show.json", %{user: user}) do
-    %{data: render_one(user, UserView, "user.json")}
-  end
-
-  def render("user.json", %{user: user}) do
-    %{
-      id: user.id,
-      gender: user.gender,
-      birth_date: user.birth_date,
-      citizenship: user.citizenship,
-      name: user.name
-    }
+  def render("user.json", %{user: user}) when is_map(user) do
+    Enum.map(user.users, fn x ->
+      %{
+        id: x.id,
+        gender: x.gender,
+        birth_date: x.birth_date,
+        citizenship: x.citizenship,
+        name: x.name
+      }
+    end)
   end
 end

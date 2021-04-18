@@ -46,7 +46,8 @@ defmodule Crowdsourcing.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:faker, "~> 0.16"},
       {:timex, "~> 3.7.5"},
-      {:excoveralls, "~> 0.10", only: :test}
+      {:excoveralls, "~> 0.10", only: :test},
+      {:credo, "~> 1.5", only: [:dev, :test], runtime: false}
     ]
   end
 

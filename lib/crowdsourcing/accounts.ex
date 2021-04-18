@@ -22,27 +22,27 @@ defmodule Crowdsourcing.Accounts do
   ## Examples
 
   iex> list_users_by_characteristics(total,
-        %{citizenship: citizenship, gender: gender, age_concept: age_concept}
+        %{citizenship: "japanese", gender: "male", age_concept: "children"}
       )
   )
   [
     %{
-      age_concept: {:children, 0.4},
-      citizenship: {:japanese, 0.25},
-      gender: {:male, 0.5},
+      age_concept: {:children, 40},
+      citizenship: {:japanese, 25},
+      gender: {:male, 50},
       users: [%User{}]
     }
   ]
 
   iex> list_users_by_characteristics(total,
-        %{citizenship: citizenship, gender: gender, age_concept: age_concept}
+        %{citizenship: "brazilian", gender: "male", age_concept: "adult"}
       )
   )
   [
     %{
-      age_concept: {:children, 0.4},
-      citizenship: {:japanese, 0.25},
-      gender: {:male, 0.5},
+      age_concept: {:children, 40},
+      citizenship: {:japanese, 25},
+      gender: {:male, 50},
       users: []
     }
   ]
@@ -86,7 +86,11 @@ defmodule Crowdsourcing.Accounts do
     {age_concept, age_concept_percentage} = age_concept
 
     size
-    |> characteristic_size(citizenship_percentage, gender_percentage, age_concept_percentage)
+    |> characteristic_size(
+      citizenship_percentage,
+      gender_percentage,
+      age_concept_percentage
+    )
     |> list_users_by_characteristics_group(%{
       citizenship: to_string(citizenship),
       gender: to_string(gender),
@@ -94,8 +98,10 @@ defmodule Crowdsourcing.Accounts do
     })
   end
 
-  defp characteristic_size(size, citizenship, gender, age_concept) do
-    round(size * citizenship * gender * age_concept)
+  defp characteristic_size(size, citizenship, gender, age_concept)
+       when is_integer(size) and is_integer(citizenship) and is_integer(gender) and
+              is_integer(age_concept) do
+    round(size * citizenship * gender * age_concept / 1_000_000)
   end
 
   defp list_users_by_characteristics_group(
