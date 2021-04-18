@@ -42,7 +42,14 @@ defmodule CrowdsourcingWeb.UserControllerTest do
         )
 
       assert length(json_response(conn, 200)["data"]) == 16
-      assert List.flatten(json_response(conn, 200)["data"]) == []
+
+      assert json_response(conn, 200)["data"] |> List.first() == %{
+               "age_concept" => "adult",
+               "citizenship" => "english",
+               "gender" => "female",
+               "size" => 0,
+               "users" => []
+             }
     end
 
     test "lists group users by characteristcs with any user", %{conn: conn} do
@@ -70,7 +77,14 @@ defmodule CrowdsourcingWeb.UserControllerTest do
 
       assert length(json_response(conn, 200)["data"]) == 16
 
-      assert json_response(conn, 200)["data"] |> List.first() |> List.first() |> Map.keys() ==
+      assert json_response(conn, 200)["data"] |> List.first() |> Map.keys() ==
+               ~w(age_concept citizenship gender size users)
+
+      assert json_response(conn, 200)["data"]
+             |> List.first()
+             |> Map.get("users")
+             |> List.first()
+             |> Map.keys() ==
                ~w(birth_date citizenship gender id name)
     end
   end

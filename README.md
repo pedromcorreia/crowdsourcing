@@ -16,11 +16,11 @@ So the multiplication of this four values will result in a value of 7.5 users, b
 
 You can find the Postman Collection in https://www.getpostman.com/collections/92adab215ebcaa017792
 
-## How to install?
+## How to install
 
 You need to install docker https://docs.docker.com/get-docker/.
 
-## How to run?
+## How to run
 
 1. Run docker:
     docker-compose build
@@ -35,10 +35,16 @@ You need to install docker https://docs.docker.com/get-docker/.
 
     `docker-compose run --rm crowdsourcing mix ecto.setup`
 
-## Tests?
+## Tests
 
 You can check the tests inside the tests/ folder
 
 You can find the coverage with `open coverage/index.html` in your terminal.
 
     `docker-compose run --rm crowdsourcing mix test`
+
+## Code analysis
+
+You can find credo running:
+
+    `docker-compose run --rm crowdsourcing mix credo`

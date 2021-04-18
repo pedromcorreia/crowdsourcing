@@ -29,3 +29,7 @@ crowdsourcing-*.tar
 
 *.swp
 *.swo
+*.swn
+*.DS_Store
+
+/db-data/
