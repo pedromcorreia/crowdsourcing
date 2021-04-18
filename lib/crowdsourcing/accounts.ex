@@ -8,70 +8,123 @@ defmodule Crowdsourcing.Accounts do
 
   alias Crowdsourcing.Accounts.User
 
+  @majority_date Timex.shift(Date.utc_today(), years: -18)
+
   @doc """
-  Returns the list of users.
+  List users by characteristics.
+
+  list_users_by_characteristics/2
+
+  Required:
+    total -> approximately size to list users;
+    map -> with the characteristics as citizenship, gender, age_concept.
 
   ## Examples
 
-  iex> list_users()
-  [%User{}, ...]
+  iex> list_users_by_characteristics(total,
+        %{citizenship: citizenship, gender: gender, age_concept: age_concept}
+      )
+  )
+  [
+    %{
+      age_concept: {:children, 0.4},
+      citizenship: {:japanese, 0.25},
+      gender: {:male, 0.5},
+      users: [%User{}]
+    }
+  ]
 
+  iex> list_users_by_characteristics(total,
+        %{citizenship: citizenship, gender: gender, age_concept: age_concept}
+      )
+  )
+  [
+    %{
+      age_concept: {:children, 0.4},
+      citizenship: {:japanese, 0.25},
+      gender: {:male, 0.5},
+      users: []
+    }
+  ]
   """
-  def list_users do
-    Repo.all(User)
+
+  @spec list_users_by_characteristics(Integer.t(), %{
+          citizenship: List.t(),
+          gender: Map.t(),
+          age_concept: Map.t()
+        }) ::
+          list(Map.t(Map.t(), Map.t(), Map.t(), Map.t(User.t())))
+  def list_users_by_characteristics(
+        size,
+        characteristics = %{
+          citizenship: _citizenship,
+          gender: %{male: _male, female: _female},
+          age_concept: %{
+            children: _children,
+            adult: _adult
+          }
+        }
+      ) do
+    Enum.map(characteristics.age_concept, fn age_concept ->
+      Enum.map(characteristics.gender, fn gender ->
+        Enum.map(characteristics.citizenship, fn citizenship ->
+          %{
+            citizenship: citizenship,
+            gender: gender,
+            age_concept: age_concept,
+            users: list_users(size, citizenship, gender, age_concept)
+          }
+        end)
+      end)
+    end)
+    |> List.flatten()
   end
 
-  @doc """
-  Gets a single user.
+  defp list_users(size, citizenship, gender, age_concept) do
+    {citizenship, citizenship_percentage} = citizenship
+    {gender, gender_percentage} = gender
+    {age_concept, age_concept_percentage} = age_concept
 
-  Raises `Ecto.NoResultsError` if the User does not exist.
-
-  ## Examples
-
-  iex> get_user!(123)
-  %User{}
-
-  iex> get_user!(456)
-  ** (Ecto.NoResultsError)
-
-  """
-  def get_user!(id), do: Repo.get!(User, id)
-
-  @doc """
-  Creates a user.
-
-  ## Examples
-
-  iex> create_user(%{field: value})
-  {:ok, %User{}}
-
-  iex> create_user(%{field: bad_value})
-  {:error, %Ecto.Changeset{}}
-
-  """
-  def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    size
+    |> characteristic_size(citizenship_percentage, gender_percentage, age_concept_percentage)
+    |> list_users_by_characteristics_group(%{
+      citizenship: to_string(citizenship),
+      gender: to_string(gender),
+      age_concept: to_string(age_concept)
+    })
   end
 
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking user changes.
-
-  ## Examples
-
-  iex> change_user(user)
-  %Ecto.Changeset{data: %User{}}
-
-  """
-  def change_user(%User{} = user, attrs \\ %{}) do
-    User.changeset(user, attrs)
+  defp characteristic_size(size, citizenship, gender, age_concept) do
+    round(size * citizenship * gender * age_concept)
   end
 
-  def list_users_by_characteristics(total, characteristics \\ %{}) do
-    query =
-      from u in User,
-        where: u.age > 18 or is_nil(u.email),
-        select: u
+  defp list_users_by_characteristics_group(
+         total,
+         %{citizenship: citizenship, gender: gender, age_concept: "adult"}
+       )
+       when gender in ~w(male female) and is_integer(total) do
+    from(u in User,
+      where:
+        u.citizenship == ^citizenship and u.gender == ^gender and
+          u.birth_date <= ^@majority_date,
+      select: u,
+      limit: ^total
+    )
+    |> Repo.all()
+  end
+
+  defp list_users_by_characteristics_group(
+         total,
+         %{citizenship: citizenship, gender: gender, age_concept: "children"}
+       )
+       when gender in ~w(male female) and is_integer(total) do
+    from(u in User,
+      where:
+        u.citizenship == ^citizenship and u.gender == ^gender and
+          u.birth_date > ^@majority_date,
+      select: u,
+      limit: ^total
+    )
+    |> Repo.all()
   end
 end

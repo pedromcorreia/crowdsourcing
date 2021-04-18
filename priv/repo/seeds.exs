@@ -16,7 +16,7 @@ citizenship = ~w(english french indian japanese)
 gender = ~w(male female)
 
 for x <- 0..1000 do
-  Crowdsourcing.Accounts.create_user(%{
+  Crowdsourcing.Repo.insert(%Crowdsourcing.Accounts.User{
     birth_date: Faker.Date.date_of_birth(10..26),
     citizenship: Enum.random(citizenship),
     gender: Enum.random(gender),

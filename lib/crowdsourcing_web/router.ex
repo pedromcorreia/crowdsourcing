@@ -7,7 +7,7 @@ defmodule CrowdsourcingWeb.Router do
 
   scope "/api", CrowdsourcingWeb do
     pipe_through :api
-    resources "/users", UserController, except: [:new, :edit]
+    resources "/users", UserController, only: [:index]
   end
 
   # Enables LiveDashboard only for development

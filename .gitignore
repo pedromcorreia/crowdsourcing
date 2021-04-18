@@ -27,5 +27,5 @@ crowdsourcing-*.tar
 # this depending on your deployment strategy.
 /priv/static/
 
-/*.swp
-/*.swo
+*.swp
+*.swo
